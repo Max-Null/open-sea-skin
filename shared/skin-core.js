@@ -427,6 +427,12 @@ body[data-ds-dark-theme] {
     };
 
     const applyEnabled = () => {
+      // The button/panel are the only way back in: mount the UI entry
+      // regardless of enabled state, so a skin that starts disabled (or on a
+      // host page that saved disabled) still offers the enable switch
+      // (2026-08-23: previously the button was created only on first enable,
+      // leaving a disabled-after-reload skin with no entry point at all).
+      if (!document.getElementById(IDS.button)) mountUi();
       if (!state.enabled) {
         // Tear down only the ocean surface (frame + glass), keeping the
         // button/panel so the skin can be re-enabled from the same page.
