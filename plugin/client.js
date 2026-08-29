@@ -481,3 +481,39 @@ body[data-ds-dark-theme] {
 
   return module.exports;
 }});
+
+;(() => {
+  const T = {
+    'Open Sea skin settings': '海洋皮肤设置',
+    'Close': '关闭',
+    'Sea state': '波浪大小',
+    'Daylight': '日光',
+    'Glass opacity': '玻璃不透明度',
+    'Changes apply immediately and save automatically. Setting daylight manually stops the automatic day cycle.': '调节即时生效并自动保存；手动设定「日光」后会停止自动昼夜循环。',
+    'Dusk': '黄昏', 'Golden hour': '金色时刻', 'Afternoon': '下午', 'Midday': '正午',
+  }
+  const isZh = () => (document.documentElement.lang || navigator.language || 'en').toLowerCase().startsWith('zh')
+  const translate = () => {
+    if (!isZh()) return
+    const btn = document.querySelector('[title="Open Sea skin settings"]')
+    if (btn && T[btn.title] !== undefined) {
+      btn.title = T[btn.title]
+      btn.setAttribute('aria-label', btn.title)
+    }
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+    const nodes = []
+    while (walker.nextNode()) nodes.push(walker.currentNode)
+    for (const n of nodes) {
+      const v = n.nodeValue
+      if (v && T[v] !== undefined) n.nodeValue = T[v]
+    }
+  }
+  let tries = 0
+  const boot = () => {
+    translate()
+    if (!document.querySelector('[title="Open Sea skin settings"]') && tries++ < 300) setTimeout(boot, 100)
+  }
+  boot()
+  new MutationObserver(translate).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] })
+  new MutationObserver(() => translate()).observe(document.body, { childList: true, subtree: true })
+})()

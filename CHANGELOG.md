@@ -2,6 +2,17 @@
 
 All notable changes to Open Sea Skin are documented here.
 
+## 1.2.2 — 2026-08-29
+
+### Fixed
+
+- Locale no longer stuck in English when DSH runs with a zh locale: the
+  settings copy was selected once at controller creation, but DSH sets
+  `document.documentElement.lang` asynchronously (the static HTML template
+  ships `lang="en"`). The plugin now re-translates the copy when the document
+  lang changes and on DOM mutation, falling back to `navigator.language` as
+  before.
+
 ## 1.2.1 — 2026-08-18
 
 ### Changed
